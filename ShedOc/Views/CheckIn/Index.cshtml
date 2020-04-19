@@ -1,0 +1,381 @@
+﻿@model ShedOc.Models.Chechin
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Patient Check-In</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("ShedOC", "Registration", "Reception", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Sign Out", "SignOut", "Home")</li>
+                    <li>@Html.ActionLink("Registration", "Index", "Patients")</li>
+                    <li>@Html.ActionLink("Check In", "Index", "CheckIn")</li>
+                    <li>@Html.ActionLink("Dummy Ticket", "Index", "Dummy")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <style>
+        .mystyle {
+            font-family: Calibri;
+            font-size: 14px;
+        }
+
+        .labelColor {
+            color: dodgerblue;
+            font-weight: normal;
+            font-variant-caps: all-petite-caps;
+        }
+        .control-label{
+            font-family: Calibri;
+            font-size: 14px;
+        }
+        .cursor {
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="form-horizontal">
+        <h4>Details</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="row">
+        <div>
+            @ViewBag.Message
+        </div>
+        
+        <div class="col-xs-4">
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.searchFullname, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.searchFullname, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.searchFullname, "", new { @class = "text-danger" })
+                    <h6></h6>
+                    <div>
+                        <input type="submit" value="Search" class=" form-control btn btn-default" />
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <h4>Patient Name</h4>
+
+
+                    <div style="overflow-y:auto; overflow-x:hidden; height:500px;">
+                        <table class="table table-bordered table-condensed">
+
+                            @for (int i = 0; i < Model.Names.Rows.Count; i++)
+                            {
+                                <tr onclick="show(this)" style="cursor:pointer;" id="@Model.Names.Rows[i]["recordID"].ToString()" class="trow">
+
+                                    <td class="hidden">@Model.Names.Rows[i]["recordID"].ToString()</td>
+
+                                    <td><a class="btn-link">@Model.Names.Rows[i]["fullname"].ToString()</a></td>
+
+                                    <td class="hidden">@Model.Names.Rows[i]["Gender"].ToString()</td>
+
+                                    <td class="hidden">@DateTime.Parse(Model.Names.Rows[i]["Birthdate1"].ToString()).ToShortDateString()</td>
+
+                                    <td class="hidden">@Model.Names.Rows[i]["Street"].ToString()</td>
+
+                                    <td class="hidden">@Model.Names.Rows[i]["Y"].ToString()</td>
+
+                                    <td class="hidden">@Model.Names.Rows[i]["M"].ToString()</td>
+
+                                    <td class="hidden">@Model.Names.Rows[i]["D"].ToString()</td>
+                                </tr>
+                            }
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-xs-4">
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.filenumber, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.filenumber, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.filenumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.PatientName, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.PatientName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.PatientName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                    <label id="agelabel" class="control-label mystyle labelColor"></label>
+                </div>
+
+
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Gender, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.ClinicVisit, htmlAttributes: new { @class = "control-label " })
+                </div>
+                <div class="col-md-12">
+
+                    @Html.DropDownListFor(model => model.ClinicVisit, Model.Clinics, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ClinicVisit, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.DoctorAssigned, htmlAttributes: new { @class = "control-label " })
+                </div>
+                <div class="col-md-12">
+
+                    @Html.DropDownListFor(model => model.DoctorAssigned, Model.Doctors, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DoctorAssigned, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-5 mystyle">Payment Type</label>
+                <div class="col-md-12">
+                    <select class="form-control cursor" id="PaymentType" onchange="change();" >
+                        <option value="Select Payment Method" selected="selected" >Select Payment Method</option>
+                        <option value="Cash Payment" id="cash">Cash Payment</option>
+                        <option value="Insurance" id="insurance">Insurance</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="Scheme">
+                <div class="form-group ">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Scheme, htmlAttributes: new { @class = "control-label mystyle" })
+                    </div>
+                    <div class="col-md-12">
+
+                        @Html.DropDownListFor(model => model.Scheme, Model.schemes, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Scheme, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.FormNumber, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.FormNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FormNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.MembershipID, htmlAttributes: new { @class = "control-label " })
+                        @Html.EditorFor(model => model.MembershipID, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.MembershipID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-12">
+                    
+                    <input type="submit" value="Check In"  class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-4">
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Temperature, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Temperature, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Temperature, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Pulse, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Pulse, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Pulse, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Respiration, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Respiration, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Respiration, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Oxygen, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Oxygen, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Oxygen, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.BPSystolic, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.BPSystolic, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.BPSystolic, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.BPDiastolic, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.BPDiastolic, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.BPDiastolic, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Weight, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control", @onkeyup = "calculatebmi();" } })
+                    @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.Height, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.Height, new { htmlAttributes = new { @class = "form-control", @onkeyup = "calculatebmi();" } })
+                    @Html.ValidationMessageFor(model => model.Height, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.BMI, htmlAttributes: new { @class = "control-label " })
+                    @Html.EditorFor(model => model.BMI, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.BMI, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+        </div>
+}
+
+<script type="text/javascript">
+
+    window.onload = function () {
+
+        var opt = document.getElementById("PaymentType").value;
+
+        if (opt == "Cash Payment" || opt == "Select Payment Method") {
+            document.getElementById("Scheme").hidden = true;
+           // document.getElementById("fnum").hidden = true;
+
+        }
+        else {
+            document.getElementById("Scheme").hidden = false;
+            //document.getElementById("fnum").hidden = false;
+
+        }
+    }
+
+    function show(x) {
+
+        var row = document.getElementById(x.id);
+        var cell = row.getElementsByTagName("td");
+
+        //var name = document.getElementById(x.id).textContent;
+        //var stringArr = name.split(/([0-9]+)/);
+       
+
+        document.getElementById("filenumber").value = cell[0].innerText;
+        document.getElementById("PatientName").value = cell[1].innerText;
+        document.getElementById("Gender").value = cell[2].innerText;
+        document.getElementById("Age").value = cell[3].innerText;
+        document.getElementById("Address").value = cell[4].innerText;
+        document.getElementById("agelabel").innerHTML = cell[5].innerText + "Y " + cell[6].innerText + "M " + cell[7].innerText + "D";
+
+    }
+
+    function change() {
+
+        var opt = document.getElementById("PaymentType").value;
+
+        if (opt == "Cash Payment" || opt == "Select Payment Method") {
+            document.getElementById("Scheme").hidden = true;
+           
+
+        }
+        else {
+            document.getElementById("Scheme").hidden = false;
+            
+
+        }
+
+
+    }
+
+    function calculatebmi() {
+        document.getElementById("BMI").value = (document.getElementById("Weight").value / Math.pow((document.getElementById("Height").value / 100), 2)).toFixed(2);
+
+    }
+
+
+
+</script>
+

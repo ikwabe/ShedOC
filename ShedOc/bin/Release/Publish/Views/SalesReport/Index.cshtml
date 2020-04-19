@@ -1,0 +1,172 @@
+﻿@model ShedOc.Models.Reports
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("ShedOC", "Index", "Report", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Sign Out", "SignOut", "Home")</li>
+                <li>@Html.ActionLink("Reports", "Index", "Report")</li>
+                <li><a href="#">Activity</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+
+<style>
+    .mystyle {
+        font-family:Calibri;
+        font-size: 16px;
+    }
+
+    .labelColor {
+        color: dodgerblue;
+        font-weight: normal;
+        font-variant-caps: all-petite-caps;
+    }
+
+    .cursor {
+        cursor: pointer;
+    }
+</style>
+<h2>Sales Report</h2>
+
+@using (Html.BeginForm("Index", "SalesReport"))
+{
+    @Html.AntiForgeryToken()
+<div>
+
+    <hr />
+
+    <div class="form-group">
+        <label class="col-xs-2 mystyle labelColor">From:</label>
+    </div>
+    <div class="form-group">
+
+        <div class="col-xs-12">
+
+            @Html.EditorFor(model => model.fromDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.fromDate, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-2 mystyle labelColor">To:</label>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            @Html.EditorFor(model => model.toDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.toDate, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-2 mystyle labelColor">Show As</label>
+    </div>
+
+   
+    <div class="form-group">
+
+        <div class="col-md-12">
+            <select class="form-control cursor" name="viewas">
+                <option value="" name="notSelected">Choose Option</option>
+                <option value="Short" name="short">Hide Description</option>
+                <option value="Full" name="long">Show Description</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label class="col-xs-2 mystyle labelColor"></label>
+    </div>
+    <div class="form-group">
+        <div class=" col-xs-12">
+
+            <input type="submit" name="sales" value="View Sales Report " class="btn btn-default form-control" onclick="location.href='@Url.Action("Index", "SalesReport")'" />
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-2 mystyle"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-12 mystyle labelColor">Table of Sales Report from @ViewBag.from to @ViewBag.tdate </label>
+    </div>
+    @*Populating report to the table*@
+
+    <div>
+        <table class="table table-bordered table-striped ">
+            <tr>
+                @for (int i = 0; i < Model.sales.Columns.Count; i++)
+                {
+                    <td>@Model.sales.Columns[i].ColumnName.ToString()</td>
+                }
+            </tr>
+
+            @for (int r = 0; r < Model.sales.Rows.Count; r++)
+            {
+                <tr>
+                    @for (int i = 0; i < Model.sales.Columns.Count; i++)
+                    {
+                        <td>@Model.sales.Rows[r][i].ToString()</td>
+                    }
+                </tr>
+            }
+
+        </table>
+    </div>
+
+    @ViewBag.SalesMessage
+
+    <hr />
+
+    <div class="form-group">
+        <label class="col-xs-2 mystyle"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-12 mystyle labelColor">Table of Money Returned from @ViewBag.from to @ViewBag.tdate </label>
+    </div>
+    <div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                @for (int i = 0; i < Model.moneyreturned.Columns.Count; i++)
+                {
+                    <td>@Model.moneyreturned.Columns[i].ColumnName.ToString()</td>
+                }
+            </tr>
+
+            @for (int r = 0; r < Model.moneyreturned.Rows.Count; r++)
+            {
+                <tr>
+                    @for (int i = 0; i < Model.moneyreturned.Columns.Count; i++)
+                    {
+                        <td>@Model.moneyreturned.Rows[r][i].ToString()</td>
+                    }
+                </tr>
+            }
+
+        </table>
+    </div>
+
+</div>
+}
+

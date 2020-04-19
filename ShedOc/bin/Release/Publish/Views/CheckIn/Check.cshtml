@@ -1,0 +1,375 @@
+﻿@using System.Data
+@model ShedOc.Models.PatientAssign
+
+@{
+    ViewBag.Title = "Check";
+}
+
+<h2>Check In</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("ShedOC", "Registration", "Reception", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Sign Out", "SignOut", "Home")</li>
+                    <li>@Html.ActionLink("Registration", "Registration", "Reception")</li>
+                    <li>@Html.ActionLink("Check in", "Check", "CheckIn")</li>
+                    <li>@Html.ActionLink("Dummy Ticket", "Index", "Dummy")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .mystyle {
+            font-family: Calibri;
+            font-size: 16px;
+        }
+
+        .labelColor {
+            color: dodgerblue;
+            font-weight: bold;
+            font-variant-caps: all-petite-caps;
+        }
+
+        .cursor {
+            cursor: pointer;
+        }
+    </style>
+    <div class="form-horizontal">
+        <h4>Patient</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-xs-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SearchName, htmlAttributes: new { @class = "col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.SearchName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SearchName, "", new { @class = "text-danger" })
+                        <h6></h6>
+                        
+                        <div>
+                            <input type="submit" value="Search" class=" form-control btn btn-default" />
+                        </div>
+
+                    </div>
+                </div>
+                <h4>Patient Name</h4>
+
+                <div style="overflow-y:auto; overflow-x:hidden; height:500px;">
+                    <table class="table table-bordered table-striped table-condensed " id="tblClients">
+
+                        @for (int i = 0; i < Model.Names.Rows.Count; i++)
+                        {
+                            <tr onclick="show(this)" style="cursor:pointer;" id="@Model.Names.Rows[i][0].ToString()">
+                                <td class="hidden">@Model.Names.Rows[i][0].ToString()</td>
+                                <td><a class="btn-link">@Model.Names.Rows[i][1].ToString()</a></td>
+                                <td class="hidden">@Model.Names.Rows[i][2].ToString()</td>
+                                <td class="hidden">@Model.Names.Rows[i][3].ToString()</td>
+                                <td class="hidden">@Model.Names.Rows[i][4].ToString()</td>
+                                <td class="hidden">@Model.Names.Rows[i][5].ToString()</td>
+                                <td class="hidden">@Model.Names.Rows[i][6].ToString()</td>
+                                <td class="hidden">@Model.Names.Rows[i][7].ToString()</td>
+                                <td class="hidden">@Model.Names.Rows[i][8].ToString()</td>
+                                <td class="hidden">@Model.Names.Rows[i][9].ToString()</td>
+                            </tr>
+                        }
+                    </table>
+
+                </div>
+
+            </div>
+
+            <div class="col-xs-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FileNumber, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        <input type="text" name="fnum" value="123456" class="hidden" />
+                        @Html.EditorFor(model => model.FileNumber, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "filenumber" } })
+                        @Html.ValidationMessageFor(model => model.FileNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PatientName, htmlAttributes: new { @class = "col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.PatientName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "pname" } })
+                        @Html.ValidationMessageFor(model => model.PatientName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-5 mystyle">Clinic Visit</label>
+                    <div class="col-md-10">
+                        <select class="form-control cursor" onchange="getValue(this);" id="clinic">
+                            @{
+                                for (int i = 0; i < Model.ClinicVisit.Rows.Count; i++)
+                                {
+                                    <option value=@Model.ClinicVisit.Rows[i][0].ToString() id="@Model.ClinicVisit.Rows[i][0].ToString()">@Model.ClinicVisit.Rows[i][0].ToString()</option>
+                                }
+
+                            }
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-5 mystyle">Assign To</label>
+                    <div class="col-md-10">
+                        <select class="form-control cursor" onchange="getValue(this);" id="docass">
+                            @{
+                                for (int i = 0; i < Model.DoctorAssigned.Rows.Count; i++)
+                                {
+                                    <option value=@Model.DoctorAssigned.Rows[i][0].ToString() id="@Model.DoctorAssigned.Rows[i][0].ToString()">@Model.DoctorAssigned.Rows[i][0].ToString()</option>
+                                }
+
+                            }
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Gender, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "gender" } })
+                        @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "age" } })
+                        @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "address" } })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-5 mystyle">Payment Type</label>
+                    <div class="col-md-10">
+                        <select class="form-control cursor" onchange="change();" id="PaymentType">
+                            <option value="Cash Payment" id="cash">Cash Payment</option>
+                            <option value="Insurance Payment" id="insurance">Insurance Payment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="Scheme">
+                    <label class="col-md-5 mystyle">Payment Type</label>
+                    <div class="col-md-10">
+                        <select class="form-control cursor">
+                            <option value="NHIF" id="NHIF">NHIF</option>
+                            <option value="NSSF" id="NSSF">NSSF</option>
+                            <option value="JUBILEE" id="JUBILEE">JUBILEE</option>
+                            <option value="EAGT" id="EAGT">EAGT</option>
+                            <option value="SEC" id="SEC">SEC</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="fnum">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FormNumber, htmlAttributes: new { @class = "col-md-5 mystyle" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.FormNumber, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.FormNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.MembershipID, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.MembershipID, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MembershipID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+                
+                <input type="submit" value="Check In" name="Create" class="form-control btn-primary" />
+
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Temperature, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Temperature, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Temperature, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Pulse, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Pulse, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Pulse, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Respiration, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Respiration, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Respiration, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Oxygen, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Oxygen, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Oxygen, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BPSystolic, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BPSystolic, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BPSystolic, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BPDiastolic, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BPDiastolic, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BPDiastolic, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Weight, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Height, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Height, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Height, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BMI, htmlAttributes: new { @class = " col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BMI, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BMI, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@*@using (Html.BeginForm("Create", "CheckIn", FormMethod.Post))
+{
+<div class="row">
+    <div class="col-xs-4">
+
+    </div>
+    <div class="col-xs-6">
+        
+       
+        <input type="submit" value="Check In" name="action:Create" class="form-control btn-primary" />
+       
+        
+    </div>
+    <div class="col-xs-2">
+
+    </div>
+</div>
+}*@
+
+@*<div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}
+
+<script type="text/javascript">
+
+    window.onload = function () {
+
+        var opt = document.getElementById("PaymentType").value;
+
+        if (opt == "Cash Payment") {
+            document.getElementById("Scheme").hidden = true;
+            document.getElementById("fnum").hidden = true;
+           
+        }
+        else {
+            document.getElementById("Scheme").hidden = false;
+            document.getElementById("fnum").hidden = false;
+           
+        }
+        count++;
+    }
+
+    function show(x) {
+
+        var row = document.getElementById(x.id);
+        var cell = row.getElementsByTagName("td");
+
+        //var name = document.getElementById(x.id).textContent;
+        //var stringArr = name.split(/([0-9]+)/);
+
+        document.getElementById("filenumber").value = cell[0].innerText;
+        document.getElementById("pname").value = cell[1].innerText;
+        document.getElementById("gender").value = cell[2].innerText;
+        document.getElementById("age").value = cell[3].innerText;
+        document.getElementById("address").value = cell[6].innerText;
+
+    }
+
+    function change() {
+
+        var opt = document.getElementById("PaymentType").value;
+
+        if (opt == "Cash Payment") {
+            document.getElementById("Scheme").hidden = true;
+            document.getElementById("fnum").hidden = true;
+           
+        }
+        else {
+            document.getElementById("Scheme").hidden = false;
+            document.getElementById("fnum").hidden = false;
+           
+        }
+
+
+
+    }
+
+
+</script>

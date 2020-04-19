@@ -1,0 +1,346 @@
+﻿@using System.Data
+@model ShedOc.Models.DoctorTreatment
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Patient Treatment</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("ShedOC", "Index", "Doctor", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Sign Out", "SignOut", "Home")</li>
+                    <li><a href="#">Vitals</a></li>
+                    <li><a href="#symptoms">Symptoms</a></li>
+                    <li><a href="#laboratory">Laboratory</a></li>
+                    <li><a href="#Diagnosis">Diagnosis</a></li>
+                    <li><a href="#treatments">Treatments</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+
+    //Customizing my styles
+
+    <style>
+        .mystyle{
+        font-family:Calibri;
+        font-size:16px;
+    }
+        .labelColor{
+         color:dodgerblue;
+        font-weight:bold;
+        font-variant-caps:all-petite-caps;
+    }
+        .cursor{
+            cursor:pointer;
+        }
+       
+    </style>
+
+    //start of the page 
+<div class="form-horizontal">
+   
+    <div class="row">
+        <div class="col-xs-3">
+
+            <hr />
+            <h3>Check In Panel</h3>
+            <hr />
+            <h4>Patient Names</h4>
+            <div style="overflow-y:auto; overflow-x:hidden; height:500px;">
+                <table class="table table-bordered table-striped table-condensed">
+
+                    @for (int i = 0; i < Model.patientAssigned.Rows.Count; i++)
+                    {
+                        <tr onclick="show(this)" style="cursor:pointer;" id="@Model.patientAssigned.Rows[i][0].ToString()">
+                            @for (int j = 0; j < Model.patientAssigned.Columns.Count; j++)
+                            {
+                                if (j == 1)
+                                {
+                                    <td><a class="btn-link">@Model.patientAssigned.Rows[i][j].ToString() @Model.patientAssigned.Rows[i][10].ToString().Substring(11)</a></td>
+                                }
+                                else
+                                {
+                                    <td class="hidden">@Model.patientAssigned.Rows[i][j].ToString()</td>
+                                }
+
+
+                            }
+
+                        </tr>
+                    }
+                </table>
+
+            </div>
+        </div>
+        <div class="col-xs-9">
+
+            <div class="row">
+                <hr />
+                <h3>Treatment Panel</h3>
+                <hr />
+                <div class="row">
+                    <div class="col-xs-6">
+                        <label class="col-xs-9 mystyle">Patient File Number: <label id="fnum" class="labelColor"></label> </label>
+                        <label class="col-xs-9 mystyle">Patient name: <label id="pname" class="labelColor"></label> </label>
+                        <label class="col-xs-9 mystyle">Age: <label id="pAge" class="labelColor"></label> </label>
+                        <label class="col-xs-9 mystyle">Gender: <label id="pgender" class="labelColor"></label> </label>
+                        <label class="col-xs-9 mystyle">Address: <label id="address" class="labelColor"></label> </label>
+                    </div>
+                    <div class="col-xs-6">
+                        <label class="col-xs-9 mystyle">Clinic Visit: <label id="clinicVisit" class="labelColor"></label> </label>
+                        <label class="col-xs-9 mystyle">Payment Type: <label id="paymentType" class="labelColor"></label> </label>
+                        <label class="col-xs-9 mystyle">Scheme: <label id="scheme" class="labelColor"></label> </label>
+                        <a href="#" class="col-xs-9">Request</a>
+                        <label class="col-xs-9 mystyle"></label>
+                        <a href="#" class="col-xs-9" onclick="showData();">Start</a>
+                        <label class="col-xs-9 mystyle"></label>
+                        <a href="#" class="col-xs-9" onclick="hideData();">Cancel</a>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" id="symp">
+                <section id="symptoms">
+                    <hr />
+                    <h4>Symptoms</h4>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Symptoms, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Symptoms, new { htmlAttributes = new { @class = "form-control" }, @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Symptoms, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Assesment, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Assesment, new { htmlAttributes = new { @class = "form-control" }, @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Assesment, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PatientHistory, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.PatientHistory, new { htmlAttributes = new { @class = "form-control" }, @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.PatientHistory, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="Post" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="row" id="lab">
+                <section id="laboratory">
+                    <hr />
+                    <h4>Laboratory Test</h4>
+                    <hr />
+
+                    <label class="mystyle">Select Laboratory Test</label>
+                    <select class="form-control cursor">
+                        @{
+                            for (int i = 0; i < Model.labTest.Rows.Count; i++)
+                            {
+                                <option value=@Model.labTest.Rows[i][0].ToString()>@Model.labTest.Rows[i][0].ToString()</option>
+                            }
+                        }
+                    </select>
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Instruction, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Instruction, new { htmlAttributes = new { @class = "form-control" }, @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Instruction, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="Send To Laboratory" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="row" id="dia">
+                <section id="Diagnosis">
+                    <hr />
+                    <h4>Diagnosis</h4>
+                    <hr />
+
+                    <label class="mystyle">Choose Diagnosis</label>
+                    <select class="form-control cursor">
+                        @{
+                            for (int i = 0; i < Model.dignosis.Rows.Count; i++)
+                            {
+                                <option value=@Model.dignosis.Rows[i][0].ToString()>@Model.dignosis.Rows[i][0].ToString()</option>
+                            }
+                        }
+                    </select>
+                    <br />
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Conditions, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Conditions, new { htmlAttributes = new { @class = "form-control" }, @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Conditions, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="Post Diagnosis" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="row" id="tre">
+                <section id="treatments">
+                    <hr />
+                    <h4>Treatments</h4>
+                    <hr />
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Drugcode, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Drugcode, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Drugcode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Days, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Days, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Days, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Morning, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Morning, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Morning, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Afternoon, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Afternoon, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Afternoon, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Evening, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Evening, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Evening, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Otherplan, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Otherplan, new { htmlAttributes = new { @class = "form-control" }, @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Otherplan, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "mystyle col-xs-9" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" }, @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="Send To Pharmacy" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+</div>
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+<script type="text/javascript">
+
+    window.onload = function () {
+        document.getElementById("symp").hidden = true;
+        document.getElementById("lab").hidden = true;
+        document.getElementById("tre").hidden = true;
+        document.getElementById("dia").hidden = true;
+    }
+    function showData() {
+        document.getElementById("symp").hidden = false;
+        document.getElementById("lab").hidden = false;
+        document.getElementById("tre").hidden = false;
+        document.getElementById("dia").hidden = false;
+
+    }
+
+    function hideData() {
+        document.getElementById("symp").hidden = true;
+        document.getElementById("lab").hidden = true;
+        document.getElementById("tre").hidden = true;
+        document.getElementById("dia").hidden = true;
+    }
+
+     function show(x) {
+
+        var row = document.getElementById(x.id);
+        var cell = row.getElementsByTagName("td");
+
+        //var name = document.getElementById(x.id).textContent;
+        //var stringArr = name.split(/([0-9]+)/);
+
+        document.getElementById("fnum").value = cell[5].innerText;
+        document.getElementById("pname").value = cell[1].innerText;
+        document.getElementById("clinicVisit").value = cell[2].innerText;
+        document.getElementById("paymentType").value = cell[3].innerText;
+        document.getElementById("scheme").value = cell[4].innerText;
+        document.getElementById("pgender").value = cell[6].innerText;
+        document.getElementById("pAge").value = cell[7].innerText;
+        document.getElementById("address").value = cell[8].innerText;
+
+        document.getElementById("fnum").innerHTML = cell[5].innerText;
+        document.getElementById("pname").innerHTML = cell[1].innerText;
+        document.getElementById("clinicVisit").innerHTML = cell[2].innerText;
+        document.getElementById("paymentType").innerHTML = cell[3].innerText;
+        document.getElementById("scheme").innerHTML = cell[4].innerText;
+        document.getElementById("pgender").innerHTML = cell[6].innerText;
+        document.getElementById("pAge").innerHTML = cell[7].innerText;
+        document.getElementById("address").innerHTML = cell[8].innerText;
+    }
+</script>

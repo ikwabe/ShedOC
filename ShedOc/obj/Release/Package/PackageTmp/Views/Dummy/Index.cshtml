@@ -1,0 +1,169 @@
+﻿
+@model ShedOc.Models.DummyTick
+
+@using System.Data
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Dummy Ticket</h2>
+
+
+@using (Html.BeginForm("Index", "Dummy"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("ShedOC", "Registration", "Reception", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Sign Out", "SignOut", "Home")</li>
+                    <li>@Html.ActionLink("Registration", "Index", "Patients")</li>
+                    <li>@Html.ActionLink("Check In", "Index", "CheckIn")</li>
+                    <li>@Html.ActionLink("Dummy Ticket", "Index", "Dummy")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <style>
+        .mystyle {
+            font-family: Calibri;
+            font-size: 16px;
+        }
+
+        .labelColor {
+            color: dodgerblue;
+            font-weight: bold;
+            font-variant-caps: all-petite-caps;
+        }
+
+        .cursor {
+            cursor: pointer;
+        }
+    </style>
+    <div class="form-horizontal">
+        <h4>Patient</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+
+            <div class="col-xs-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.searchFullname, htmlAttributes: new { @class = "col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.searchFullname, new { htmlAttributes = new { @class = "form-control", id = "search" } })
+                        @Html.ValidationMessageFor(model => model.searchFullname, "", new { @class = "text-danger" })
+                        <h6></h6>
+                        <div>
+                            <input type="submit" value="Search" class=" form-control btn btn-default" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <h4>Patient Name</h4>
+                <div style="overflow-y:auto; overflow-x:hidden; height:500px;">
+                    <table class="table table-bordered table-striped table-condensed">
+
+                        @for (int i = 0; i < Model.Names.Rows.Count; i++)
+                        {
+                            <tr onclick="show(this)" style="cursor:pointer;" id="@Model.Names.Rows[i][0].ToString()" class="trow">
+                                <td class="hidden">@Model.Names.Rows[i][0].ToString()</td>
+                                <td><a class="btn-link">@Model.Names.Rows[i][1].ToString()</a></td>
+                            </tr>
+                        }
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="col-xs-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.fileNumber, htmlAttributes: new { @class = "col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.fileNumber, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "filenumber" } })
+                        @Html.ValidationMessageFor(model => model.fileNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.fullname, htmlAttributes: new { @class = "col-md-5 mystyle" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.fullname, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @id = "pname" } })
+                        @Html.ValidationMessageFor(model => model.fullname, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-5 mystyle">Payment Type</label>
+                    <div class="col-md-10">
+                        <select class="form-control cursor" id="PaymentType">
+                            <option value="Cash Payment" id="cash">Cash Payment</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xs-4">
+                <h4>Laboratory Tests</h4>
+                @{
+                    foreach (var item in Model.Tests)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"
+                                       name="LabTest"
+                                       value="@item.Value" class="checkbox" />@item.Text
+                                </label>
+                            </div>
+                    }
+                }
+                <hr />
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <a href="#" class="btn btn-primary">Create Dummy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+}
+
+@*<div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}
+
+<script type="text/javascript">
+
+    function show(x) {
+
+        var row = document.getElementById(x.id);
+        var cell = row.getElementsByTagName("td");
+
+        //var name = document.getElementById(x.id).textContent;
+        //var stringArr = name.split(/([0-9]+)/);
+
+        document.getElementById("filenumber").value = cell[0].innerText;
+        document.getElementById("pname").value = cell[1].innerText;
+
+
+    }
+</script>
